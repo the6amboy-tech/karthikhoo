@@ -3,60 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karthik Services | Quick Access</Karthik Services>
+    <title>Karthik Hub | Instant Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: white; }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
         }
-        .glass-card:hover { transform: translateY(-5px); }
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.3);
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen items-center justify-center p-6">
+<body class="min-h-screen flex flex-col">
 
-    <header class="text-center mb-12">
-        <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            Instant Service Hub
+    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto w-full">
+        <div class="text-2xl font-bold tracking-tighter">KARTHIK<span class="text-blue-500">.</span></div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#" class="hover:text-white transition">Services</a>
+            <a href="#" class="hover:text-white transition">Portfolio</a>
+            <a href="#" class="hover:text-white transition">Contact</a>
+        </div>
+    </nav>
+
+    <header class="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+            Universal <span class="gradient-text">Service Hub</span>
         </h1>
-        <p class="text-gray-400 mt-2">No login required. Just enter and go.</p>
+        <p class="text-gray-400 max-w-lg text-lg mb-12">
+            Professional tools and instant messaging access. No login, no tracking, just utility.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+            
+            <div class="service-card p-8 rounded-3xl text-left">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.631 1.432h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">WhatsApp Direct</h3>
+                <p class="text-gray-500 text-sm mb-6">Chat with any number instantly without saving them to your phonebook.</p>
+                
+                <div class="space-y-3">
+                    <input type="text" id="wa-phone" placeholder="91XXXXXXXXXX" class="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-blue-500 outline-none transition">
+                    <button onclick="openWA()" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-blue-500 hover:text-white transition">
+                        Open Chat
+                    </button>
+                </div>
+            </div>
+
+            <div class="service-card p-8 rounded-3xl text-left">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Editor's Resource</h3>
+                <p class="text-gray-500 text-sm mb-6">Fast cloud sharing and design assets for freelance editors.</p>
+                <div class="h-32 bg-white/5 rounded-xl flex items-center justify-center border border-dashed border-white/10">
+                    <span class="text-gray-600 font-mono text-xs uppercase tracking-widest font-bold">Deploying Assets...</span>
+                </div>
+            </div>
+
+        </div>
     </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
-        
-        <div class="glass-card p-8 rounded-2xl flex flex-col items-center">
-            <div class="bg-emerald-500 p-3 rounded-full mb-4">
-                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.631 1.432h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-            </div>
-            <h2 class="text-xl font-semibold mb-2">WhatsApp Direct</h2>
-            <p class="text-gray-400 text-sm text-center mb-6">Message any number without saving it to your contacts.</p>
-            <input type="text" id="phone" placeholder="Phone with country code (e.g. 91...)" class="w-full bg-slate-800 border border-slate-700 p-3 rounded-lg mb-4 text-center">
-            <button onclick="sendWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-3 rounded-lg transition">
-                Start Chat
-            </button>
-        </div>
-
-        <div class="glass-card p-8 rounded-2xl flex flex-col items-center opacity-50">
-            <h2 class="text-xl font-semibold mb-2">More Services</h2>
-            <p class="text-gray-400 text-sm text-center">Cloud File Sharing & Video Tools coming soon.</p>
-        </div>
-
-    </main>
-
-    <footer class="mt-12 text-gray-500 text-sm">
-        &copy; 2026 Karthik Edits | Powered by GitHub Vercel
+    <footer class="p-8 border-t border-white/5 text-center text-gray-600 text-xs">
+        &copy; 2026 KARTHIK EDITS. DEPLOYED VIA GITHUB VERCEL.
     </footer>
 
     <script>
-        function sendWhatsApp() {
-            const phone = document.getElementById('phone').value.replace(/\D/g,'');
-            if(phone) {
-                window.open(`https://wa.me/${phone}`, '_blank');
+        function openWA() {
+            const input = document.getElementById('wa-phone').value.replace(/\D/g, '');
+            if (input.length >= 10) {
+                window.open('https://wa.me/' + input, '_blank');
             } else {
-                alert("Please enter a valid phone number with country code.");
+                alert('Please enter a valid phone number including country code (e.g., 91 for India).');
             }
         }
     </script>
