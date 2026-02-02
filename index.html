@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karthik Services | Private P2P Chat</title>
+    <title>Karthik Services | Room Number Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         body { background-color: #050505; color: #e5e7eb; font-family: 'Inter', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        #chat-box::-webkit-scrollbar { width: 4px; }
-        #chat-box::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
     <nav class="p-6 border-b border-white/10 flex justify-between items-center">
         <h1 class="text-xl font-bold tracking-tighter">KARTHIK <span class="text-blue-500">SERVICES</span></h1>
-        <div id="status" class="text-xs text-yellow-500 font-mono uppercase">Initializing...</div>
+        <div id="status" class="text-xs text-gray-500 font-mono uppercase">Offline</div>
     </nav>
 
     <main class="flex-grow flex flex-col items-center justify-center p-4">
         
         <div id="setup-area" class="w-full max-w-md glass p-8 rounded-3xl text-center">
-            <h2 class="text-2xl font-bold mb-2">Private Chat</h2>
-            <p class="text-gray-500 text-sm mb-8">No servers. No logs. Direct browser-to-browser.</p>
+            <h2 class="text-2xl font-bold mb-6">Enter Room Number</h2>
             
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-widest">Your ID (Give this to your friend)</label>
-                    <div id="my-id" class="bg-white/5 p-4 rounded-xl font-mono text-blue-400 border border-white/5 select-all">Loading...</div>
+            <div class="space-y-6">
+                <input type="text" id="room-input" placeholder="e.g. 1 or 123" 
+                    class="w-full bg-black border border-white/10 p-4 rounded-xl focus:border-blue-500 outline-none text-center text-2xl font-bold text-blue-400">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="createRoom()" class="bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold transition">Create Room</button>
+                    <button onclick="joinRoom()" class="bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold transition border border-white/10">Join Room</button>
                 </div>
-
-                <div class="py-4 text-gray-600 font-bold">OR</div>
-
-                <div>
-                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-widest">Join a Room</label>
-                    <input type="text" id="peer-id-input" placeholder="Enter friend's ID number" class="w-full bg-black border border-white/10 p-4 rounded-xl focus:border-blue-500 outline-none mb-3 text-center">
-                    <button onclick="connectToPeer()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold transition">Start Private Chat</button>
-                </div>
+                <p class="text-xs text-gray-500">To start, one person must 'Create' and the other must 'Join' using the same number.</p>
             </div>
         </div>
 
         <div id="chat-area" class="hidden w-full max-w-2xl flex flex-col h-[80vh]">
-            <div id="chat-box" class="flex-grow glass rounded-t-3xl p-6 overflow-y-auto space-y-4 mb-1">
-                <div class="text-center text-gray-500 text-xs italic">End-to-end P2P connection established.</div>
-            </div>
+            <div id="chat-box" class="flex-grow glass rounded-t-3xl p-6 overflow-y-auto space-y-4 mb-1"></div>
             <div class="flex gap-2 p-2 glass rounded-b-3xl">
                 <input type="text" id="msg-input" placeholder="Type a message..." class="flex-grow bg-transparent p-4 outline-none">
                 <button onclick="sendMessage()" class="bg-blue-600 px-8 py-4 rounded-2xl font-bold">Send</button>
@@ -55,42 +46,55 @@
     </main>
 
     <script>
-        const myIdDisplay = document.getElementById('my-id');
-        const status = document.getElementById('status');
+        let peer = null;
+        let conn = null;
+
         const setupArea = document.getElementById('setup-area');
         const chatArea = document.getElementById('chat-area');
         const chatBox = document.getElementById('chat-box');
-        const msgInput = document.getElementById('msg-input');
-        
-        let peer;
-        let conn;
+        const status = document.getElementById('status');
 
-        // Initialize PeerJS (Uses a public cloud server just to find the other user, then disconnects)
-        peer = new Peer();
+        // Person A: Creates the room with a specific number
+        function createRoom() {
+            const roomId = document.getElementById('room-input').value;
+            if (!roomId) return alert("Enter a number first!");
 
-        peer.on('open', (id) => {
-            myIdDisplay.innerText = id;
-            status.innerText = "Ready to connect";
-            status.className = "text-xs text-green-500 font-mono uppercase";
-        });
+            peer = new Peer('karthik-room-' + roomId); // Custom ID based on your number
 
-        // Receiving a connection
-        peer.on('connection', (c) => {
-            conn = c;
-            setupChat();
-        });
+            peer.on('open', (id) => {
+                status.innerText = "Room " + roomId + " Active. Waiting for friend...";
+                status.className = "text-xs text-blue-400 font-mono uppercase";
+            });
 
-        function connectToPeer() {
-            const peerId = document.getElementById('peer-id-input').value;
-            conn = peer.connect(peerId);
-            setupChat();
+            peer.on('connection', (c) => {
+                conn = c;
+                startChat();
+            });
+
+            peer.on('error', (err) => {
+                if (err.type === 'unavailable-id') alert("This room number is already taken. Try another!");
+            });
         }
 
-        function setupChat() {
+        // Person B: Joins the room with the same number
+        function joinRoom() {
+            const roomId = document.getElementById('room-input').value;
+            if (!roomId) return alert("Enter the room number!");
+
+            peer = new Peer(); // Random ID for the joiner
+
+            peer.on('open', () => {
+                conn = peer.connect('karthik-room-' + roomId);
+                startChat();
+            });
+        }
+
+        function startChat() {
             conn.on('open', () => {
                 setupArea.classList.add('hidden');
                 chatArea.classList.remove('hidden');
                 status.innerText = "Connected";
+                status.className = "text-xs text-green-500 font-mono uppercase";
             });
 
             conn.on('data', (data) => {
@@ -99,10 +103,10 @@
         }
 
         function sendMessage() {
-            const msg = msgInput.value;
-            if (msg && conn) {
-                conn.send(msg);
-                appendMessage(msg, 'me');
+            const msgInput = document.getElementById('msg-input');
+            if (msgInput.value && conn) {
+                conn.send(msgInput.value);
+                appendMessage(msgInput.value, 'me');
                 msgInput.value = '';
             }
         }
@@ -110,19 +114,10 @@
         function appendMessage(msg, sender) {
             const div = document.createElement('div');
             div.className = sender === 'me' ? 'flex justify-end' : 'flex justify-start';
-            div.innerHTML = `
-                <div class="${sender === 'me' ? 'bg-blue-600' : 'bg-white/10'} px-4 py-2 rounded-2xl max-w-[80%]">
-                    ${msg}
-                </div>
-            `;
+            div.innerHTML = `<div class="${sender === 'me' ? 'bg-blue-600' : 'bg-white/10'} px-4 py-2 rounded-2xl max-w-[80%]">${msg}</div>`;
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
-        // Send on Enter key
-        msgInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
     </script>
 </body>
 </html>
