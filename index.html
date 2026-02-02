@@ -3,43 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karthik Services | Room Number Chat</title>
+    <title>Karthik Services | Ultra-Private Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: #e5e7eb; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glow-card { background: #0a0a0a; border: 1px solid #1a1a1a; box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+        .btn-gradient { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        #chat-box::-webkit-scrollbar { width: 4px; }
+        #chat-box::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
-    <nav class="p-6 border-b border-white/10 flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-tighter">KARTHIK <span class="text-blue-500">SERVICES</span></h1>
-        <div id="status" class="text-xs text-gray-500 font-mono uppercase">Offline</div>
+    <nav class="p-5 border-b border-white/5 flex justify-between items-center bg-black/50 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+            <h1 class="text-lg font-extrabold tracking-tighter uppercase">Karthik <span class="text-blue-500">Services</span></h1>
+        </div>
+        <div id="status" class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">System Offline</div>
     </nav>
 
-    <main class="flex-grow flex flex-col items-center justify-center p-4">
+    <main class="flex-grow flex flex-col items-center justify-center p-6">
         
-        <div id="setup-area" class="w-full max-w-md glass p-8 rounded-3xl text-center">
-            <h2 class="text-2xl font-bold mb-6">Enter Room Number</h2>
+        <div id="setup-area" class="w-full max-w-md glow-card p-10 rounded-[32px] text-center border-white/5">
+            <h2 class="text-3xl font-extrabold mb-2 italic">Direct Chat</h2>
+            <p class="text-gray-500 text-sm mb-10">Enter a room number to begin private P2P session.</p>
             
             <div class="space-y-6">
-                <input type="text" id="room-input" placeholder="e.g. 1 or 123" 
-                    class="w-full bg-black border border-white/10 p-4 rounded-xl focus:border-blue-500 outline-none text-center text-2xl font-bold text-blue-400">
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="createRoom()" class="bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold transition">Create Room</button>
-                    <button onclick="joinRoom()" class="bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold transition border border-white/10">Join Room</button>
+                <div class="relative">
+                    <input type="text" id="room-input" placeholder="Room Number (e.g. 7)" 
+                        class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl focus:border-blue-500/50 outline-none text-center text-3xl font-bold text-white transition-all">
                 </div>
-                <p class="text-xs text-gray-500">To start, one person must 'Create' and the other must 'Join' using the same number.</p>
+                
+                <div class="flex flex-col gap-3">
+                    <button onclick="initAction('create')" class="btn-gradient w-full py-5 rounded-2xl font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all">Create Room</button>
+                    <button onclick="initAction('join')" class="w-full py-5 rounded-2xl font-bold text-lg border border-white/10 hover:bg-white/5 transition-all text-gray-400">Join Existing</button>
+                </div>
+                <p class="text-[10px] text-gray-600 font-medium">Note: The creator must click "Create" before the friend clicks "Join".</p>
             </div>
         </div>
 
-        <div id="chat-area" class="hidden w-full max-w-2xl flex flex-col h-[80vh]">
-            <div id="chat-box" class="flex-grow glass rounded-t-3xl p-6 overflow-y-auto space-y-4 mb-1"></div>
-            <div class="flex gap-2 p-2 glass rounded-b-3xl">
-                <input type="text" id="msg-input" placeholder="Type a message..." class="flex-grow bg-transparent p-4 outline-none">
-                <button onclick="sendMessage()" class="bg-blue-600 px-8 py-4 rounded-2xl font-bold">Send</button>
+        <div id="chat-area" class="hidden w-full max-w-2xl flex flex-col h-[85vh]">
+            <div id="chat-box" class="flex-grow glow-card rounded-t-[32px] p-6 overflow-y-auto space-y-4 mb-2">
+                <div class="text-center py-10">
+                    <p class="text-[10px] text-blue-500 font-bold uppercase tracking-widest">Secure P2P Line Established</p>
+                    <p class="text-gray-600 text-xs">No data is being stored on any server.</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 p-3 glow-card rounded-[24px]">
+                <input type="text" id="msg-input" placeholder="Write a message..." 
+                    class="flex-grow bg-transparent p-4 outline-none text-sm font-medium">
+                <button onclick="sendMessage()" class="btn-gradient px-8 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20">Send</button>
             </div>
         </div>
 
@@ -54,70 +71,98 @@
         const chatBox = document.getElementById('chat-box');
         const status = document.getElementById('status');
 
-        // Person A: Creates the room with a specific number
-        function createRoom() {
-            const roomId = document.getElementById('room-input').value;
-            if (!roomId) return alert("Enter a number first!");
+        function updateStatus(text, colorClass) {
+            status.innerText = text;
+            status.className = `text-[10px] font-mono uppercase tracking-widest ${colorClass}`;
+        }
 
-            peer = new Peer('karthik-room-' + roomId); // Custom ID based on your number
+        function initAction(type) {
+            const roomId = document.getElementById('room-input').value.trim();
+            if (!roomId) return alert("Please enter a room number.");
 
-            peer.on('open', (id) => {
-                status.innerText = "Room " + roomId + " Active. Waiting for friend...";
-                status.className = "text-xs text-blue-400 font-mono uppercase";
-            });
+            // Resetting peer if already exists
+            if (peer) peer.destroy();
 
-            peer.on('connection', (c) => {
-                conn = c;
-                startChat();
-            });
+            if (type === 'create') {
+                // Host ID is karthik-svcs- [your number]
+                peer = new Peer('karthik-svcs-' + roomId);
+                
+                peer.on('open', () => {
+                    updateStatus(`Room ${roomId} Active - Tell friend to join`, 'text-blue-500');
+                });
+
+                peer.on('connection', (c) => {
+                    conn = c;
+                    setupConnection();
+                });
+
+            } else {
+                // Joiner gets a random ID
+                peer = new Peer();
+                
+                peer.on('open', () => {
+                    updateStatus("Connecting to " + roomId + "...", "text-yellow-500");
+                    conn = peer.connect('karthik-svcs-' + roomId);
+                    setupConnection();
+                });
+            }
 
             peer.on('error', (err) => {
-                if (err.type === 'unavailable-id') alert("This room number is already taken. Try another!");
+                console.error(err);
+                if (err.type === 'unavailable-id') {
+                    alert("This room is already active. Use a different number.");
+                } else {
+                    alert("Connection failed. Make sure the creator has the room open.");
+                }
+                location.reload();
             });
         }
 
-        // Person B: Joins the room with the same number
-        function joinRoom() {
-            const roomId = document.getElementById('room-input').value;
-            if (!roomId) return alert("Enter the room number!");
-
-            peer = new Peer(); // Random ID for the joiner
-
-            peer.on('open', () => {
-                conn = peer.connect('karthik-room-' + roomId);
-                startChat();
-            });
-        }
-
-        function startChat() {
+        function setupConnection() {
             conn.on('open', () => {
                 setupArea.classList.add('hidden');
                 chatArea.classList.remove('hidden');
-                status.innerText = "Connected";
-                status.className = "text-xs text-green-500 font-mono uppercase";
+                updateStatus("Secure Connection: Active", "text-green-500 font-bold");
             });
 
             conn.on('data', (data) => {
                 appendMessage(data, 'friend');
             });
+
+            conn.on('close', () => {
+                alert("Connection lost.");
+                location.reload();
+            });
         }
 
         function sendMessage() {
-            const msgInput = document.getElementById('msg-input');
-            if (msgInput.value && conn) {
-                conn.send(msgInput.value);
-                appendMessage(msgInput.value, 'me');
-                msgInput.value = '';
+            const input = document.getElementById('msg-input');
+            if (input.value.trim() && conn) {
+                conn.send(input.value);
+                appendMessage(input.value, 'me');
+                input.value = '';
             }
         }
 
         function appendMessage(msg, sender) {
             const div = document.createElement('div');
             div.className = sender === 'me' ? 'flex justify-end' : 'flex justify-start';
-            div.innerHTML = `<div class="${sender === 'me' ? 'bg-blue-600' : 'bg-white/10'} px-4 py-2 rounded-2xl max-w-[80%]">${msg}</div>`;
+            
+            const inner = document.createElement('div');
+            inner.className = sender === 'me' 
+                ? 'bg-blue-600 text-white px-5 py-3 rounded-2xl rounded-tr-none text-sm font-medium max-w-[80%]' 
+                : 'bg-white/5 border border-white/10 px-5 py-3 rounded-2xl rounded-tl-none text-sm font-medium max-w-[80%]';
+            
+            inner.innerText = msg;
+            div.appendChild(inner);
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
+
+        // Handle Enter key
+        document.getElementById('msg-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
